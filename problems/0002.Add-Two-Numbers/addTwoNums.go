@@ -4,39 +4,27 @@ import (
 	"leetcode/structs"
 )
 
-func addTwoNumbers(l1 *structs.ListNode, l2 *structs.ListNode) *structs.ListNode {
-	dummy := &structs.ListNode{Val: -1}
-	pre := dummy
-	carry := 0
-	for l1 != nil || l2 != nil {
-		sum := 0
-		if l1 != nil && l2 != nil {
-			v := carry + l1.Val + l2.Val
-			sum = v % 10
-			carry = v / 10
-			l1 = l1.Next
-			l2 = l2.Next
-		} else if l1 != nil {
-			v := carry + l1.Val
-			sum = v % 10
-			carry = v / 10
-			l1 = l1.Next
+type ListNode = structs.ListNode
 
-		} else if l2 != nil {
-			v := carry + l2.Val
-			sum = v % 10
-			carry = v / 10
+func addTwoNumbers(l1 *ListNode, l2 *ListNode) *ListNode {
+	head := &ListNode{Val: -1}
+	n1, n2, carry, current := 0, 0, 0, head
+	for l1 != nil || l2 != nil || carry > 0 {
+		if l1 == nil {
+			n1 = 0
+		} else {
+			n1 = l1.Val
+			l1 = l1.Next
+		}
+		if l2 == nil {
+			n2 = 0
+		} else {
+			n2 = l2.Val
 			l2 = l2.Next
 		}
-		pre.Next = &structs.ListNode{
-			Val: sum,
-		}
-		pre = pre.Next
+		current.Next = &ListNode{Val: (n1 + n2 + carry) % 10}
+		carry = (n1 + n2 + carry) / 10
+		current = current.Next
 	}
-	if carry > 0 {
-		pre.Next = &structs.ListNode{
-			Val: carry,
-		}
-	}
-	return dummy.Next
+	return head.Next
 }
